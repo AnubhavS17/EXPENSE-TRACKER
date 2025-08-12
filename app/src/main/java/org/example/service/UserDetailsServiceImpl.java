@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
@@ -49,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return false;
         }
         String userId = UUID.randomUUID().toString();
-        UserInfo userInfo = new UserInfo(userId, userInfoDto.getUsername(), userInfoDto.getPassword(), new HashSet<>());
+        UserInfo userInfo = new UserInfo(userId, userInfoDto.getUsername(), userInfoDto.getPassword(), new HashSet<>(),new ArrayList<>());
         userInfoRepository.save(userInfo);
         return true;
     }
