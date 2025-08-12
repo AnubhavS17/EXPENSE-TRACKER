@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.example.entities.UserInfo;
 
+@EqualsAndHashCode(callSuper = true)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
 @AllArgsConstructor
@@ -19,8 +21,9 @@ public class UserInfoDto extends UserInfo {
 
     private String firstName;
     private String lastName;
+    private String userName;
     private String email;
     private Long phoneNumber;
-//    private String password;
+    private String password;
 
 }

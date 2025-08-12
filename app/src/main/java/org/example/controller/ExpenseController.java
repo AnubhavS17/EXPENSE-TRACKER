@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -37,10 +39,12 @@ public class ExpenseController {
         return new ResponseEntity<>(expense,HttpStatus.valueOf(200));
     }
     @DeleteMapping("delete/{name}")
-    public ResponseEntity<String> delete(@PathVariable String name){
+    public ResponseEntity<Map<String,String>> delete(@PathVariable String name){
         Expense expense=expenseRepository.findByName(name);
         expenseRepository.delete(expense);
-        return new ResponseEntity<>("DELETED SUCCESSFULLY",HttpStatus.valueOf(200));
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Expense deleted successfully");
+        return new ResponseEntity<>(response,HttpStatus.valueOf(200));
     }
     @PutMapping("update/{name}")
     public ResponseEntity<String> update(@RequestBody Expense expense,@PathVariable String name){
