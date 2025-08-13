@@ -42,6 +42,10 @@ public class TokenController {
     public ResponseEntity<?> AuthenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
         if(authentication.isAuthenticated()){
+            RefreshToken token=refreshTokenService.getToken(authRequestDTO.getUsername());
+            if(!refreshTokenService.isExpired(token)){
+                return new ResponseEntity<>("Logged In Successfully", HttpStatus.OK);
+            }
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequestDTO.getUsername());
 
                 return new ResponseEntity<>(JwtResponseDTO.builder()

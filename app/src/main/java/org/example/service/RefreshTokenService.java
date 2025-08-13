@@ -36,6 +36,19 @@ public class RefreshTokenService {
         }
         return token;
     }
+    public boolean isExpired(RefreshToken token){
+        if(token.getExpiryDate().compareTo(Instant.now())>0){
+            return false;
+        }
+        return true;
+    }
+
+    public RefreshToken getToken(String username){
+        UserInfo userInfo=userRepository.findByUsername(username);
+        RefreshToken token=refreshTokenRepository.findByUserInfo_UserId(userInfo.getUserId()).orElse(null);
+        return token;
+    }
+
 
     public Optional<RefreshToken> findByToken(String token){
         return refreshTokenRepository.findByToken(token);
