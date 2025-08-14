@@ -46,7 +46,9 @@ public class TokenController {
             if(!refreshTokenService.isExpired(token)){
                 return new ResponseEntity<>("Logged In Successfully", HttpStatus.OK);
             }
+            refreshTokenService.delete(token);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequestDTO.getUsername());
+
 
                 return new ResponseEntity<>(JwtResponseDTO.builder()
                         .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()))

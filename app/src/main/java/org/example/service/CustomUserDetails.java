@@ -22,7 +22,6 @@ public class CustomUserDetails extends UserInfo implements UserDetails {
         this.username = byUsername.getUsername();
         this.password= byUsername.getPassword();
         List<GrantedAuthority> auths = new ArrayList<>();
-
         for(UserRole role : byUsername.getRoles()){
             auths.add(new SimpleGrantedAuthority(role.getName().toUpperCase()));
         }
