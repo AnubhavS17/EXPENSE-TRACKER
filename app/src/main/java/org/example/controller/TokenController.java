@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 public class TokenController {
@@ -62,6 +63,18 @@ public class TokenController {
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
         System.out.println("Received refresh token: " + refreshTokenRequestDTO.getToken());
         try {
+            String token=refreshTokenRequestDTO.getToken();
+           RefreshToken token1=refreshTokenService.findByToken(token).orElse(null);
+            assert token1 != null;
+            if(!refreshTokenService.isExpired(token1)){
+                UserInfo userInfo = token1.getUserInfo();
+                String accessToken =jwtService.GenerateToken(userInfo.getUsername());
+                RefreshToken refreshToken=refreshTokenService.getToken(userInfo.getUsername());
+                JwtResponseDTO jwtResponseDTO=new JwtResponseDTO();
+                jwtResponseDTO.setAccessToken(accessToken);
+                jwtResponseDTO.setToken(refreshToken.getToken());
+                return ResponseEntity.ok().body(jwtResponseDTO);
+            }
             JwtResponseDTO response = refreshTokenService.findByToken(refreshTokenRequestDTO.getToken())
                     .map(refreshTokenService::verifyExpiration)
                     .map(refreshToken -> {

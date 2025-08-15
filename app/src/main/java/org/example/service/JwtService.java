@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,11 @@ public class JwtService {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public Boolean validUserWithExpiredToken(String token,UserDetails userDetails){
+        final String username=extractUsername(token);
+        return (username.equals(userDetails.getUsername())&& isTokenExpired(token));
     }
     public String GenerateToken(String username){
         Map<String, Object> claims = new HashMap<>();
