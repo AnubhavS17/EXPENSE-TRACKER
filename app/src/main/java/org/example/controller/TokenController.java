@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.entities.RefreshToken;
 import org.example.entities.UserInfo;
 import org.example.request.AuthRequestDTO;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Controller
+@Slf4j
 public class TokenController {
 
     @Autowired
@@ -44,8 +46,16 @@ public class TokenController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
         if(authentication.isAuthenticated()){
             RefreshToken token=refreshTokenService.getToken(authRequestDTO.getUsername());
+            log.info("USERNAME {}",authRequestDTO.getUsername());
+
             if(!refreshTokenService.isExpired(token)){
-                return new ResponseEntity<>("Logged In Successfully", HttpStatus.OK);
+                return new ResponseEntity<>(
+                            JwtResponseDTO.builder()
+                                    .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()))
+                                    .token(token.getToken())
+                                    .build(),
+                            HttpStatus.OK
+                    );
             }
             refreshTokenService.delete(token);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequestDTO.getUsername());

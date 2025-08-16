@@ -55,13 +55,14 @@ public class ExpenseController {
 //        Expense expense=expenseRepository.findByName(name);
 //        return new ResponseEntity<>(expense,HttpStatus.valueOf(200));
 //    }
-    @DeleteMapping("delete/{name}")
-    public ResponseEntity<Map<String,String>> delete(@PathVariable String name){
-        Expense expense=expenseRepository.findByName(name);
-        expenseRepository.delete(expense);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Expense deleted successfully");
-        return new ResponseEntity<>(response,HttpStatus.valueOf(200));
+    @DeleteMapping("delete/{username}/{name}")
+    public ResponseEntity<Map<String,String>> delete(@PathVariable("username") String username,@PathVariable("name")String name){
+        try {
+            String msg = expenseService.deleteExpense(username, name);
+            return ResponseEntity.ok(Map.of("message", "Expense deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
     }
     @PutMapping("update/{name}")
     public ResponseEntity<String> update(@RequestBody Expense expense,@PathVariable String name){
